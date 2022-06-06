@@ -43,6 +43,7 @@ CLIFE = function (params) {
 	this.height = this.gridHeight * this.cellSize;
 
 	this.cellsMatrix = {};
+	this.cellsMatrixYX = {};
 	this.speed_ = 1000;
 	this.running_ = false;
 	this.paused_ = false;
@@ -86,6 +87,7 @@ CLIFE.LINE_WIDTH = 0.1;
  */
 CLIFE.prototype.createCells = function () {
 	this.cellsMatrix = {};
+	this.cellsMatrixYX = {};
 	let dx = this.gridWidth + 1;
 	let dy = this.gridHeight + 1;
 	for (let x = 0; x < dx; x++) {
@@ -93,6 +95,10 @@ CLIFE.prototype.createCells = function () {
 		for (let y = 0; y < dy; y++) {
 			let cell = this.addCell(x, y);
 			this.cellsMatrix[x][y] = {cell: cell};
+			if (!this.cellsMatrixYX[y]) {
+				this.cellsMatrixYX[y] = {};
+			}
+			this.cellsMatrixYX[y][x] = {cell: cell};
 		}
 	}
 
@@ -427,25 +433,51 @@ CLIFE.prototype.getGridCoords = function (x, y) {
 
 CLIFE.prototype.step = function () {
 	this.steps_++;
-	let cellsMatrix = this.cellsMatrix;
+	// let cellsMatrix = this.cellsMatrix;
 	let changed = false;
-	for (let x in cellsMatrix) {
-		let cmx = cellsMatrix[x];
-		for (let y in cmx) {
-			let cell = cmx[y].cell;
-			let relsLiving = cell.countLivingRels();
-			if (cell.living) {
-				if (relsLiving < 2 || relsLiving > 3) {
-					cell.die(false);
+
+	// for (let x in cellsMatrix) {
+	// 	let cmx = cellsMatrix[x];
+	// 	for (let y in cmx) {
+	// 		let cell = cmx[y].cell;
+	// 		let relsLiving = cell.countLivingRels();
+	// 		if (cell.living) {
+	// 			if (relsLiving < 2 || relsLiving > 3) {
+	// 				cell.die(false);
+	// 				changed = true;
+	// 			}
+	// 		}
+	// 		else if (relsLiving === 3) {
+	// 			cell.born(false);
+	// 			changed = true;
+	// 		}
+	// 	}
+	// }
+
+	let cellsMatrix = this.cellsMatrixYX;
+	let xln = this.gridWidth;
+	let yln = this.gridHeight;
+
+
+	for (let yi = 0; yi < yln; yi++) {
+		let line = cellsMatrix[yi];
+		for (let xi = 0; xi < xln; xi++) {
+				let cell = line[xi].cell;
+				let relsLiving = cell.countLivingRels();
+				if (cell.living) {
+					if (relsLiving < 2 || relsLiving > 3) {
+						cell.die(false);
+						changed = true;
+					}
+				}
+				else if (relsLiving === 3) {
+					cell.born(false);
 					changed = true;
 				}
-			}
-			else if (relsLiving === 3) {
-				cell.born(false);
-				changed = true;
-			}
+
 		}
 	}
+
 	this.updateCanvas_();
 	if (!changed) {
 		this.stop();
