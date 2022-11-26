@@ -16,6 +16,8 @@ CLIFE.CCell = function (params) {
 	this.coords = params.coords;
 	this.size = params.size;
 	this.living = false;
+	this.borning = false;
+	this.dying = false;
 	this.relatives = {};
 };
 
@@ -36,6 +38,7 @@ CLIFE.CCell.prototype.born = function (draw = true) {
 	context.fillStyle = CLIFE.COLORS.filled_cell;
 	context.fillRect(this.coords.x * this.size, this.coords.y * this.size, this.size - CLIFE.CCell.PADDING, this.size - CLIFE.CCell.PADDING);
 	this.living = true;
+	this.borning = false;
 	this.fireEvent(CLIFE.CCell.EVENTS.onborn, {
 		cell: this
 	});
@@ -46,6 +49,7 @@ CLIFE.CCell.prototype.die = function (draw = true) {
 	context.fillStyle = CLIFE.COLORS.empty_cell;
 	context.fillRect(this.coords.x * this.size, this.coords.y * this.size, this.size - CLIFE.CCell.PADDING, this.size - CLIFE.CCell.PADDING);
 	this.living = false;
+	this.dying = false;
 	this.fireEvent(CLIFE.CCell.EVENTS.ondie, {
 		cell: this
 	});
@@ -77,4 +81,21 @@ CLIFE.CCell.prototype.setRelatives = function (relatives) {
 
 CLIFE.CCell.prototype.setSize = function (size) {
 	this.size = size;
-}
+};
+
+CLIFE.CCell.prototype.setDying = function () {
+	this.dying = true;
+};
+
+CLIFE.CCell.prototype.isDying = function () {
+	return this.dying;
+};
+
+CLIFE.CCell.prototype.setBorning = function () {
+	this.borning = true;
+};
+
+CLIFE.CCell.prototype.isBorning = function () {
+	return this.borning;
+};
+

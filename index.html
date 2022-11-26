@@ -32,7 +32,7 @@
 		</div>
 			<div class="col-3">
 			<label>Скорость игры</label>
-			<input class="form-control" type="number" id="life-game-speed" value="3" min="1" max="10">
+			<input class="form-control" type="number" id="life-game-speed" value="3" min="1" max="30">
 		</div>
 	</div>
 	<div class="row">

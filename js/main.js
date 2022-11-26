@@ -63,7 +63,7 @@ function createGame() {
 		let lived = data.borned - data.died;
 		if (lived < 0)
 			lived = 0;
-		info.innerHTML = '<p>Всего родилось ' + data.borned + ' клеток, умерло ' + data.died + ' клеток, шагов: ' + data.steps + ', живых: '+(lived)+'</p>';
+		info.innerHTML = '<p>Всего родилось ' + data.borned + ' клеток, умерло ' + data.died + ' клеток, шагов: ' + data.steps + ', живых: ' + (lived) + '</p>';
 	});
 
 	let res = document.getElementById('result');
@@ -73,7 +73,7 @@ function createGame() {
 	});
 
 	Game.listen(CLIFE.EVENTS.gameover, function (data) {
-		res.innerHTML = '<h3>Игра окончена</h3><p>Всего родилось ' + data.borned + ' клеток, умерло ' + data.died + ' клеток</p>';
+		res.innerHTML = '<h3>Игра окончена</h3><p>Всего шагов ' + data.steps + ', родилось ' + data.borned + ', умерло ' + data.died + '</p>';
 	});
 
 	window.GameOBJ = Game;

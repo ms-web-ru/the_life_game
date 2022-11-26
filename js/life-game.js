@@ -436,24 +436,6 @@ CLIFE.prototype.step = function () {
 	// let cellsMatrix = this.cellsMatrix;
 	let changed = false;
 
-	// for (let x in cellsMatrix) {
-	// 	let cmx = cellsMatrix[x];
-	// 	for (let y in cmx) {
-	// 		let cell = cmx[y].cell;
-	// 		let relsLiving = cell.countLivingRels();
-	// 		if (cell.living) {
-	// 			if (relsLiving < 2 || relsLiving > 3) {
-	// 				cell.die(false);
-	// 				changed = true;
-	// 			}
-	// 		}
-	// 		else if (relsLiving === 3) {
-	// 			cell.born(false);
-	// 			changed = true;
-	// 		}
-	// 	}
-	// }
-
 	let cellsMatrix = this.cellsMatrixYX;
 	let xln = this.gridWidth;
 	let yln = this.gridHeight;
@@ -462,21 +444,33 @@ CLIFE.prototype.step = function () {
 	for (let yi = 0; yi < yln; yi++) {
 		let line = cellsMatrix[yi];
 		for (let xi = 0; xi < xln; xi++) {
-				let cell = line[xi].cell;
-				let relsLiving = cell.countLivingRels();
-				if (cell.living) {
-					if (relsLiving < 2 || relsLiving > 3) {
-						cell.die(false);
-						changed = true;
-					}
+			let cell = line[xi].cell;
+			let relsLiving = cell.countLivingRels();
+			if (cell.living) {
+				if (relsLiving < 2 || relsLiving > 3) {
+					cell.setDying();
 				}
-				else if (relsLiving === 3) {
-					cell.born(false);
-					changed = true;
-				}
-
+			}
+			else if (relsLiving === 3) {
+				cell.setBorning();
+			}
 		}
 	}
+	for (let yi = 0; yi < yln; yi++) {
+		let line = cellsMatrix[yi];
+		for (let xi = 0; xi < xln; xi++) {
+			let cell = line[xi].cell;
+			if (cell.isDying()) {
+				cell.die(false);
+				changed = true;
+			}
+			if (cell.isBorning()) {
+				cell.born(false);
+				changed = true;
+			}
+		}
+	}
+
 
 	this.updateCanvas_();
 	if (!changed) {
@@ -496,7 +490,8 @@ CLIFE.prototype.updateCanvas_ = function () {
 CLIFE.prototype.gameOver = function () {
 	this.fireEvent(CLIFE.EVENTS.gameover, {
 		borned: this.borned_,
-		died: this.died_
+		died: this.died_,
+		steps: this.steps_
 	});
 };
 
